@@ -1,22 +1,19 @@
-# tiny-chess-01 — 4 KB chess engine
+# tiny chess
 
-A compact, deterministic chess engine in Python: 0x88 board, negamax with
-alpha-beta + transposition table + quiescence search, tapered piece-square
-evaluation, check extensions, mate-distance pruning, a fixed 90,000-node
-budget per move (never clock-based), and a 15-position opening book keyed by
-position hash.
+A tiny Python chess engine under 4KB. It reads FEN from stdin, searches with alpha-beta, and prints a move.
 
-## Files
+## usage
 
-- `engine.py` — readable source. The competition entrypoint `main.py` is
-  produced from it with the kit's compress command:
-  `node cli/makefun.mjs compress engine.py --out main.py`
-  (simulated packed size ~3,730 bytes, under the 4,096 limit).
-- `LICENSE` — MIT.
+Feed a FEN line on stdin and read the chosen move back. The engine keeps the interface small: one position in, one move out.
 
-## Running
+## engine
 
-- Local / test mode (no env): feed FEN positions on stdin, one per line;
-  the engine prints the best move in UCI on stdout.
-- Trial mode: set `MAKEFUN_ENV_URL` and the engine polls the env for the
-  game in play and posts its moves in UCI.
+Search uses alpha-beta with a transposition table, quiescence for captures, and piece-square tables for placement. Movegen builds legal moves, nodes count the work, and mate lines end the search early.
+
+## testing
+
+Perft checks movegen counts. Mate positions check finishing lines. Small positions check that search, tables, and quiescence agree.
+
+## limits
+
+Tiny means limits: 4KB of code, shallow depth on busy positions, and simple evaluation. It plays chess, it does not promise mastery.
